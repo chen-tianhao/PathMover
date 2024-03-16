@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/NUnitTest_PM/bin/Debug/net6.0
+/NUnitTest_PM/obj
+/PathMoverDemo/bin/Debug/net6.0
+/PathMoverDemo/obj
+/PathMoverLibrary/bin/Debug/netstandard2.1
+/PathMoverLibrary/obj

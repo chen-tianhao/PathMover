@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace PathMover
@@ -91,13 +92,20 @@ namespace PathMover
             }
         }
 
-        public void PrintRouteTable()
+        public string PrintRouteTable()
         {
+            StringBuilder sb = new StringBuilder();
             foreach (var kvp in _routeTable)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("{0}-{1},{2},{3},{4}", kvp.Key.Item1, kvp.Key.Item2, kvp.Value.Length, kvp.Value.NumberOfLane, kvp.Value.RemainingCapacity);
+                string startPoint = kvp.Key.Item1;
+                string endPoint = kvp.Key.Item2;
+                PmPath pmPath = kvp.Value;
+                string pendingIStr = string.Join(",", pmPath.InPendingList.Select(item => ((string)item.GetType().GetProperty("Item1").GetValue(item))));
+                string pendingOStr = string.Join(",", pmPath.OutPendingList.Select(item => ((string)item.GetType().GetProperty("Item1").GetValue(item))));
+                sb.AppendFormat("{0}-{1}, Len:{2}, Lane:{3}, Capacity:{4}/{5}, PendingIn:{6}, PendingOut:{7}\n", 
+                    startPoint, endPoint, pmPath.Length, pmPath.NumberOfLane, pmPath.RemainingCapacity, pmPath.TotalCapacity, pmPath.InPendingList.Count, pmPath.OutPendingList.Count);
             }
+            return sb.ToString();
         }
     }
 }

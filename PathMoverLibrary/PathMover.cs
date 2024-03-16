@@ -88,6 +88,10 @@ namespace PathMover
                         }
                         break;
                     }
+                    else
+                    {
+                        // Console.WriteLine(_pathMoverStatics.PrintRouteTable());
+                    }
                 }
                 else
                 {
@@ -193,8 +197,8 @@ namespace PathMover
                     Schedule(() => AttemptToDepart(formerPath), TimeSpan.FromMilliseconds(1));
                     path.InPendingList.RemoveAt(0);
                     HC_PathPendingMap[path].ObserveChange(-1 * vehicle.CapacityNeeded);
-                    Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
                 }
+                Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
             }
         }
         void ReadyToExit(Vehicle vehicle, PmPath path)
@@ -217,10 +221,10 @@ namespace PathMover
                     {
                         PmPath path = pair.Path.InPendingList[0].Item2;
                         Schedule(() => AttemptToDepart(path), TimeSpan.FromMilliseconds(1));
-                        Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
                         pair.Path.InPendingList.RemoveAt(0);
                         HC_PathPendingMap[pair.Path].ObserveChange(-1 * vehicle.CapacityNeeded);
                     }
+                    Schedule(() => AttemptToEnter(pair.Path.StartPoint), TimeSpan.FromMilliseconds(1));
                     _readyToExitList.Remove(pair);
                     break;
                 }
