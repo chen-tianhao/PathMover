@@ -18,7 +18,7 @@ namespace PathMover
         public DateTime EnterTimeStamp { get; set; }
         public List<Vehicle> OutPendingList { get; set; } = new List<Vehicle>(); //P.Q
         public List<(Vehicle, PmPath)> InPendingList { get; set; } = new List<(Vehicle, PmPath)>(); //CP.Q
-        public PmPath(ControlPoint start, ControlPoint end, int capacity = 5, double length = 1.0, int numberOfLane = 1)
+        public PmPath(ControlPoint start, ControlPoint end, int capacity = 20, double length = 100, int numberOfLane = 1)
         {
             StartPoint = start;
             EndPoint = end;

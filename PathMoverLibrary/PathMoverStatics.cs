@@ -1,21 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace PathMover
 {
-    public class VehicleControlPointPair
-    {
-        public Vehicle Vehicle { get; set; }
-        public ControlPoint ControlPoint { get; set; }
-        public VehicleControlPointPair(Vehicle vehicle, ControlPoint controlPoint)
-        {
-            Vehicle = vehicle;
-            ControlPoint = controlPoint;
-        }
-    }
     public class VehiclePathPair
     {
         public Vehicle Vehicle { get; set; }
@@ -30,15 +19,15 @@ namespace PathMover
     {
         #region Statics
         // (current, target) -> NextHop
-        private Dictionary<(string, string), PmPath> _routeTable = new Dictionary<(string, string), PmPath>();
-        private Dictionary<string, ControlPoint> _routePoints = new Dictionary<string, ControlPoint>();
-        public List<(string, string)> PathList = new List<(string, string)>();
+        public Dictionary<(string, string), PmPath> RouteTable { get; private set; } = new Dictionary<(string, string), PmPath>();
+        public Dictionary<string, ControlPoint> AllControlPoints { get; private set; } = new Dictionary<string, ControlPoint>();
+        public List<PmPath> PathList { get; private set; } = new List<PmPath>();
         //private readonly StreamWriter _swPathMoverStatics;
         #endregion
 
         public PathMoverStatics()
         {
-            _routeTable = new Dictionary<(string, string), PmPath>();
+            RouteTable = new Dictionary<(string, string), PmPath>();
             //_swPathMoverStatics = new StreamWriter($"RT.csv");
         }
 
@@ -49,42 +38,43 @@ namespace PathMover
 
         public void AddPath(string from, string to, PmPath nextHop)
         {
+            // Console.WriteLine(from + to);
             // update route table
-            if (!_routeTable.ContainsKey((from, to)))
+            if (!RouteTable.ContainsKey((from, to)))
             {
-                _routeTable.Add((from, to), nextHop);
+                RouteTable.Add((from, to), nextHop);
             }
             // update control point list
-            if (!_routePoints.ContainsKey(from))
+            if (!AllControlPoints.ContainsKey(nextHop.StartPoint.Tag))
             {
-                _routePoints.Add(from, nextHop.StartPoint);
+                AllControlPoints.Add(nextHop.StartPoint.Tag, nextHop.StartPoint);
             }
-            if (!_routePoints.ContainsKey(to))
+            if (!AllControlPoints.ContainsKey(nextHop.EndPoint.Tag))
             {
-                _routePoints.Add(to, nextHop.EndPoint);
+                AllControlPoints.Add(nextHop.EndPoint.Tag, nextHop.EndPoint);
             }
-            //update path list
-            if (!PathList.Contains((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag)))
+            //update path list // DOTO: need to merge 2 path object with same start/end point
+            if (!PathList.Contains((nextHop)))
             {
-                PathList.Add((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag));
+                PathList.Add((nextHop));
                 // Since we need HC_PathMap to record every path, need to add every path into _routeTable
-                if (!_routeTable.ContainsKey((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag)))
+                if (!RouteTable.ContainsKey((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag)))
                 {
-                    _routeTable.Add((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag), nextHop);
+                    RouteTable.Add((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag), nextHop);
                 }
             }
         }
 
         public PmPath GetPath(string from, string to)
         {
-            return _routeTable[(from, to)];
+            return RouteTable[(from, to)];
         }
 
         public ControlPoint GetControlPoint(string tag)
         {
-            if (_routePoints.ContainsKey(tag))
+            if (AllControlPoints.ContainsKey(tag))
             { 
-                return _routePoints[tag];
+                return AllControlPoints[tag];
             }
             else
             {
@@ -92,20 +82,13 @@ namespace PathMover
             }
         }
 
-        public string PrintRouteTable()
+        public void PrintRouteTable()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (var kvp in _routeTable)
+            foreach (var kvp in RouteTable)
             {
-                string startPoint = kvp.Key.Item1;
-                string endPoint = kvp.Key.Item2;
-                PmPath pmPath = kvp.Value;
-                string pendingIStr = string.Join(",", pmPath.InPendingList.Select(item => ((string)item.GetType().GetProperty("Item1").GetValue(item))));
-                string pendingOStr = string.Join(",", pmPath.OutPendingList.Select(item => ((string)item.GetType().GetProperty("Item1").GetValue(item))));
-                sb.AppendFormat("{0}-{1}, Len:{2}, Lane:{3}, Capacity:{4}/{5}, PendingIn:{6}, PendingOut:{7}\n", 
-                    startPoint, endPoint, pmPath.Length, pmPath.NumberOfLane, pmPath.RemainingCapacity, pmPath.TotalCapacity, pmPath.InPendingList.Count, pmPath.OutPendingList.Count);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("{0}-{1},{2},{3},{4}", kvp.Key.Item1, kvp.Key.Item2, kvp.Value.Length, kvp.Value.NumberOfLane, kvp.Value.RemainingCapacity);
             }
-            return sb.ToString();
         }
     }
 }

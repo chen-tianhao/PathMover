@@ -8,7 +8,7 @@ namespace PathMover
     {
         public string Name { get; set; }
         public PathMoverStatics PathMoverStatics { get; set; }
-        public double Length { get; set; } = 14;
+        public double Length { get; set; } = 4;
         public double Speed { get; set; }
         public int CapacityNeeded { get; set; } = 1;
         public enum Phase { QuayToYard, YardToQuay, YardToYard }
