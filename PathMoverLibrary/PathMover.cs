@@ -86,7 +86,7 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(controlPoint.Tag);
                 if (nextPath != null)
                 {
-                    double deltaTime = ClockTime.Subtract(nextPath.EnterTimeStamp).Seconds;
+                    double deltaTime = ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds;
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
                         if (deltaTime >= _smoothFactor)
@@ -176,7 +176,7 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(path.EndPoint.Tag);
                 if (nextPath != null) //需要进入下一段路
                 {
-                    double deltaTime = ClockTime.Subtract(nextPath.DepartTimeStamp).Seconds;
+                    double deltaTime = ClockTime.Subtract(nextPath.DepartTimeStamp).TotalSeconds;
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
                         if (deltaTime >= _smoothFactor)
