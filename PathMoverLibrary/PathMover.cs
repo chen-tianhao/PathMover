@@ -86,16 +86,16 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(controlPoint.Tag);
                 if (nextPath != null)
                 {
-                    double deltaTime = ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds;
+                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds,6);
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
                         if (deltaTime >= _smoothFactor)
                         {
-                            Enter(vehicle, nextPath, cp);
+                            Schedule(() => AttemptToEnter(cp), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
                         }
                         else
                         {
-                            Schedule(() => AttemptToEnter(cp), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
+                            Enter(vehicle, nextPath, cp);
                         }
                         break;
                     }
@@ -176,21 +176,21 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(path.EndPoint.Tag);
                 if (nextPath != null) //需要进入下一段路
                 {
-                    double deltaTime = ClockTime.Subtract(nextPath.DepartTimeStamp).TotalSeconds;
+                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.DepartTimeStamp).TotalSeconds,6);
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
-                        if (deltaTime >= _smoothFactor)
+                        if (deltaTime < _smoothFactor)
+                        {
+                            path.IsCongestion = true;
+                            Schedule(() => AttemptToDepart(path), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
+                        }
+                        else
                         {
                             path.IsCongestion = false;
                             path.OutPendingList.Remove(vehicle);
                             //Schedule(() => Depart(vehicle, path), TimeSpan.FromMilliseconds(1)); //还没有离开当前路段，所以仍传递当前路段
                             Depart(vehicle, path);
                             nextPath.DepartTimeStamp = ClockTime;
-                        }
-                        else
-                        {
-                            path.IsCongestion = true;
-                            Schedule(() => AttemptToDepart(path), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
                         }
                     }
                     else //下一段路还在堵
