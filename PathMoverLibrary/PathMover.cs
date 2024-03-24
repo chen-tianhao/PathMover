@@ -89,7 +89,7 @@ namespace PathMover
                     double deltaTime = Math.Round(ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds,6);
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
-                        if (deltaTime >= _smoothFactor)
+                        if (deltaTime < _smoothFactor)
                         {
                             Schedule(() => AttemptToEnter(cp), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
                         }
