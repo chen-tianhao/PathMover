@@ -40,10 +40,10 @@ namespace PathMover
                 HC_PathInPending.Add(pathMoverStatics.GetPath(path.StartPoint.Tag, path.EndPoint.Tag), AddHourCounter());
 
             }
-/*          foreach (var entry in HC_PathPendingMap)
-            {
-                Console.WriteLine($"from: {entry.Key.StartPoint.Tag}, Last Count: {entry.Key.EndPoint.Tag}");
-            }*/
+            /*          foreach (var entry in HC_PathPendingMap)
+                        {
+                            Console.WriteLine($"from: {entry.Key.StartPoint.Tag}, Last Count: {entry.Key.EndPoint.Tag}");
+                        }*/
         }
 
         #region Input Events
@@ -86,7 +86,7 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(controlPoint.Tag);
                 if (nextPath != null)
                 {
-                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds,6);
+                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.EnterTimeStamp).TotalSeconds, 6);
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
                         if (deltaTime < _smoothFactor)
@@ -154,7 +154,7 @@ namespace PathMover
                 // 可选：重新抛出异常或进行错误处理
                 throw;
             }
-           
+
         }
         void AttemptToDepart(PmPath path)
         {
@@ -176,7 +176,7 @@ namespace PathMover
                 PmPath nextPath = vehicle.NextPath(path.EndPoint.Tag);
                 if (nextPath != null) //需要进入下一段路
                 {
-                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.DepartTimeStamp).TotalSeconds,6);
+                    double deltaTime = Math.Round(ClockTime.Subtract(nextPath.DepartTimeStamp).TotalSeconds, 6);
                     if (nextPath.RemainingCapacity >= vehicle.CapacityNeeded)
                     {
                         if (deltaTime < _smoothFactor)
@@ -219,10 +219,12 @@ namespace PathMover
                 // 可选：重新抛出异常或进行错误处理
                 throw;
             }
-            
+
         }
+        public event Action<Vehicle, PmPath> OnDepart = (v, cp) => { };
         void Depart(Vehicle vehicle, PmPath path) // vehicle depart from path
         {
+            OnDepart.Invoke(vehicle, path);
             path.RemainingCapacity += vehicle.CapacityNeeded;
             HC_PathOccupied[path].ObserveChange(-1 * vehicle.CapacityNeeded);
             PmPath nextPath = vehicle.NextPath(path.EndPoint.Tag);
@@ -237,7 +239,7 @@ namespace PathMover
                     Schedule(() => AttemptToDepart(formerPath), TimeSpan.FromMilliseconds(1));
                     path.InPendingList.RemoveAt(0);
                     HC_PathInPending[path].ObserveChange(-1 * vehicle.CapacityNeeded);
-                } 
+                }
                 Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
             }
         }
@@ -251,7 +253,7 @@ namespace PathMover
         #region Output Events
         public void Exit(Vehicle vehicle, ControlPoint cp)
         {
-            foreach(VehiclePathPair pair in _readyToExitList)
+            foreach (VehiclePathPair pair in _readyToExitList)
             {
                 if (pair.Vehicle == vehicle && pair.Path.EndPoint.Tag.Equals(cp.Tag))
                 {

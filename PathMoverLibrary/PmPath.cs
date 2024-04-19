@@ -1,7 +1,5 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using O2DESNet;
 
 namespace PathMover
 {
@@ -18,6 +16,7 @@ namespace PathMover
         public DateTime EnterTimeStamp { get; set; }
         public List<Vehicle> OutPendingList { get; set; } = new List<Vehicle>(); //P.Q
         public List<(Vehicle, PmPath)> InPendingList { get; set; } = new List<(Vehicle, PmPath)>(); //CP.Q
+
         public PmPath(ControlPoint start, ControlPoint end, int capacity = 20, double length = 100, int numberOfLane = 1)
         {
             StartPoint = start;
@@ -27,31 +26,34 @@ namespace PathMover
             Length = length;
             NumberOfLane = numberOfLane;
         }
-        /*
-        public bool operator ==(PmPath p1, PmPath p2)
+
+        public static bool operator ==(PmPath p1, PmPath p2)
         {
-            if (p1.StartPoint == p2.StartPoint && p1.EndPoint == p2.EndPoint)
+            if (ReferenceEquals(p1, p2))
             {
                 return true;
             }
-            else
+            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null))
             {
                 return false;
             }
+            return p1.StartPoint == p2.StartPoint && p1.EndPoint == p2.EndPoint;
         }
 
-        public bool operator !=(PmPath p1, PmPath p2)
+        public static bool operator !=(PmPath p1, PmPath p2)
         {
-            if (p1.StartPoint == p2.StartPoint && p1.EndPoint == p2.EndPoint)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return !(p1 == p2);
         }
-        */
+
+        public override bool Equals(object obj)
+        {
+            var path = obj as PmPath;
+            return path != null && StartPoint == path.StartPoint && EndPoint == path.EndPoint;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(StartPoint, EndPoint);
+        }
     }
-
 }

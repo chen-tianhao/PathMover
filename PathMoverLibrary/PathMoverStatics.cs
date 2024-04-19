@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace PathMover
@@ -70,10 +71,15 @@ namespace PathMover
             return RouteTable[(from, to)];
         }
 
+        public bool PathExists(string from, string to)
+        {
+            return PathList.Any(path => path.StartPoint.Tag == from && path.EndPoint.Tag == to);
+        }
+
         public ControlPoint GetControlPoint(string tag)
         {
             if (AllControlPoints.ContainsKey(tag))
-            { 
+            {
                 return AllControlPoints[tag];
             }
             else
