@@ -8,9 +8,9 @@ namespace PathMover
 {
     public class VehiclePathPair
     {
-        public Vehicle Vehicle { get; set; }
+        public IVehicle Vehicle { get; set; }
         public PmPath Path { get; set; }
-        public VehiclePathPair(Vehicle vehicle, PmPath path)
+        public VehiclePathPair(IVehicle vehicle, PmPath path)
         {
             Vehicle = vehicle;
             Path = path;

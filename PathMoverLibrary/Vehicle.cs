@@ -4,15 +4,25 @@ using System.Text;
 
 namespace PathMover
 {
-    public class Vehicle
+    public interface IVehicle
+    {
+        string Name { get; set; }
+        PathMoverStatics PathMoverStatics { get; set; }
+        double Speed { get; set; }
+        int CapacityNeeded { get; set; }
+        PmPath CurrentPath { get; set; }
+        bool IsStoped { get; set; }
+        List<ControlPoint> TargetList { get; set; }
+        void RemoveTarget(string controlPointTag);
+        PmPath NextPath(string currentPointTag);
+    }
+    public class Vehicle : IVehicle
     {
         public string Name { get; set; }
         public PathMoverStatics PathMoverStatics { get; set; }
         public double Length { get; set; } = 4;
         public double Speed { get; set; }
         public int CapacityNeeded { get; set; } = 1;
-        public enum Phase { QuayToYard, YardToQuay, YardToYard }
-        public Phase CurrentPhase { get; set; }
         public PmPath CurrentPath { get; set; }
         public bool IsStoped { get; set; } = false;
         public List<ControlPoint> TargetList { get; set; }

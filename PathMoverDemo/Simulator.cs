@@ -81,13 +81,13 @@ namespace PathMoverTest
             PathMover.OnReadyToExit += ShowExit;
         }
 
-        void ShowEnter(Vehicle v, ControlPoint cp)
+        void ShowEnter(IVehicle v, ControlPoint cp)
         {
             Console.WriteLine($"{v.Name} exter from: {cp.Tag}");
             NumberEnter++;
         }
 
-        void ShowExit(Vehicle v, ControlPoint cp)
+        void ShowExit(IVehicle v, ControlPoint cp)
         {
             Console.WriteLine($"{v.Name} exit from: {cp.Tag}");
             NumberOut++;

@@ -14,8 +14,8 @@ namespace PathMover
         public bool IsCongestion { get; set; } = false;
         public DateTime DepartTimeStamp { get; set; }
         public DateTime EnterTimeStamp { get; set; }
-        public List<Vehicle> OutPendingList { get; set; } = new List<Vehicle>(); //P.Q
-        public List<(Vehicle, PmPath)> InPendingList { get; set; } = new List<(Vehicle, PmPath)>(); //CP.Q
+        public List<IVehicle> OutPendingList { get; set; } = new List<IVehicle>(); //P.Q
+        public List<(IVehicle, PmPath)> InPendingList { get; set; } = new List<(IVehicle, PmPath)>(); //CP.Q
 
         public PmPath(ControlPoint start, ControlPoint end, int capacity = 20, double length = 100, int numberOfLane = 1)
         {

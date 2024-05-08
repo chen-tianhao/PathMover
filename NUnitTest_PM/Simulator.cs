@@ -85,14 +85,14 @@ namespace NUnitTest_PM
             OnThen += PathMover.Exit;
         }
 
-        void ShowExit(Vehicle v, ControlPoint cp)
+        void ShowExit(IVehicle v, ControlPoint cp)
         {
             Console.WriteLine($"{v.Name} get out from CP: {cp.Tag}\n");
             _Result4UnitTest += string.Format($"{v.Name} get out from CP: {cp.Tag}\n");
             OnThen.Invoke(v, cp);
         }
 
-        public event Action<Vehicle, ControlPoint> OnThen = (v, cp) => { };
+        public event Action<IVehicle, ControlPoint> OnThen = (v, cp) => { };
     }
 
 }

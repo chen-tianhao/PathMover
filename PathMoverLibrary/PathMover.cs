@@ -14,7 +14,7 @@ namespace PathMover
         #endregion
 
         #region Dynamics
-        public Dictionary<ControlPoint, List<Vehicle>> VehiclePendingToEnterMapByCP { get; private set; } = new Dictionary<ControlPoint, List<Vehicle>>();
+        public Dictionary<ControlPoint, List<IVehicle>> VehiclePendingToEnterMapByCP { get; private set; } = new Dictionary<ControlPoint, List<IVehicle>>();
         public List<VehiclePathPair> _readyToExitList { get; private set; } = new List<VehiclePathPair>();
         public Dictionary<(string, string), double> MaxAgvInPathMap { get; private set; }
         public Dictionary<PmPath, HourCounter> HC_PathOccupied { get; private set; }
@@ -47,7 +47,7 @@ namespace PathMover
         }
 
         #region Input Events
-        public void RequestToEnter(Vehicle vehicle, ControlPoint cp)
+        public void RequestToEnter(IVehicle vehicle, ControlPoint cp)
         {
             bool sameInSameOut = true;
             foreach (ControlPoint targetCp in vehicle.TargetList)
@@ -65,7 +65,7 @@ namespace PathMover
 
             if (!VehiclePendingToEnterMapByCP.ContainsKey(cp))
             {
-                VehiclePendingToEnterMapByCP.Add(cp, new List<Vehicle>());
+                VehiclePendingToEnterMapByCP.Add(cp, new List<IVehicle>());
                 HC_PendingListByCP.Add(cp, AddHourCounter());
             }
             VehiclePendingToEnterMapByCP[cp].Add(vehicle);
@@ -73,14 +73,14 @@ namespace PathMover
             Schedule(() => AttemptToEnter(cp), TimeSpan.FromMilliseconds(1));
         }
 
-        public event Action<Vehicle, ControlPoint> OnEnter = (v, cp) => { };
+        public event Action<IVehicle, ControlPoint> OnEnter = (v, cp) => { };
         #endregion
 
         #region Internal Events
         void AttemptToEnter(ControlPoint cp)
         {
             if (!VehiclePendingToEnterMapByCP.ContainsKey(cp) || VehiclePendingToEnterMapByCP[cp].Count == 0) return;
-            foreach (Vehicle vehicle in VehiclePendingToEnterMapByCP[cp])
+            foreach (IVehicle vehicle in VehiclePendingToEnterMapByCP[cp])
             {
                 ControlPoint controlPoint = cp;
                 PmPath nextPath = vehicle.NextPath(controlPoint.Tag);
@@ -109,7 +109,7 @@ namespace PathMover
                 }
             }
         }
-        void Enter(Vehicle vehicle, PmPath path, ControlPoint controlPoint)
+        void Enter(IVehicle vehicle, PmPath path, ControlPoint controlPoint)
         {
             path.EnterTimeStamp = ClockTime;
             OnEnter.Invoke(vehicle, controlPoint);
@@ -118,8 +118,8 @@ namespace PathMover
             vehicle.IsStoped = true;
             Arrive(vehicle, path);
         }
-        public event Action<Vehicle, PmPath> OnArrive = (v, cp) => { };
-        void Arrive(Vehicle vehicle, PmPath path)
+        public event Action<IVehicle, PmPath> OnArrive = (v, cp) => { };
+        void Arrive(IVehicle vehicle, PmPath path)
         {
             OnArrive.Invoke(vehicle, path);
             vehicle.CurrentPath = path;
@@ -138,8 +138,8 @@ namespace PathMover
             }
             Schedule(() => Complete(vehicle, path), TimeSpan.FromSeconds(timeDelay));
         }
-        public event Action<Vehicle, PmPath> OnComplete = (v, cp) => { };
-        void Complete(Vehicle vehicle, PmPath path)
+        public event Action<IVehicle, PmPath> OnComplete = (v, cp) => { };
+        void Complete(IVehicle vehicle, PmPath path)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace PathMover
                 {
                     return;
                 }
-                Vehicle vehicle = path.OutPendingList[0];
+                IVehicle vehicle = path.OutPendingList[0];
                 if (path.IsCongestion)
                 {
                     vehicle.IsStoped = true;
@@ -221,8 +221,8 @@ namespace PathMover
             }
 
         }
-        public event Action<Vehicle, PmPath> OnDepart = (v, cp) => { };
-        void Depart(Vehicle vehicle, PmPath path) // vehicle depart from path
+        public event Action<IVehicle, PmPath> OnDepart = (v, cp) => { };
+        void Depart(IVehicle vehicle, PmPath path) // vehicle depart from path
         {
             OnDepart.Invoke(vehicle, path);
             path.RemainingCapacity += vehicle.CapacityNeeded;
@@ -243,7 +243,7 @@ namespace PathMover
                 Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
             }
         }
-        void ReadyToExit(Vehicle vehicle, PmPath path)
+        void ReadyToExit(IVehicle vehicle, PmPath path)
         {
             _readyToExitList.Add(new VehiclePathPair(vehicle, path));
             OnReadyToExit.Invoke(vehicle, path.EndPoint);
@@ -251,7 +251,7 @@ namespace PathMover
         #endregion
 
         #region Output Events
-        public void Exit(Vehicle vehicle, ControlPoint cp)
+        public void Exit(IVehicle vehicle, ControlPoint cp)
         {
             foreach (VehiclePathPair pair in _readyToExitList)
             {
@@ -274,7 +274,7 @@ namespace PathMover
             return;
         }
 
-        public event Action<Vehicle, ControlPoint> OnReadyToExit = (v, cp) => { };
+        public event Action<IVehicle, ControlPoint> OnReadyToExit = (v, cp) => { };
         #endregion
 
         #region Common Functions
