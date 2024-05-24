@@ -3,9 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+	
+	<PackageId>PathMover</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>Chen Tianhao</Authors>
+	<Company>NUS</Company>
+	
+	<Description>A Path Mover implementation library based on O2DESNet framework.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/chen-tianhao/PathMover</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+	<None Include="E:/github_code/PathMover/README.md" Pack="true" PackagePath="" />
+	<None Include="E:/github_code/PathMover/LICENSE" Pack="true" PackagePath="" />
     <PackageReference Include="O2DESNet" Version="3.7.1" />
   </ItemGroup>
 
