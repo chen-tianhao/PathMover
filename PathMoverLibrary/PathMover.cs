@@ -156,7 +156,7 @@ namespace PathMover
             }
 
         }
-        void AttemptToDepart(PmPath path)
+        void AttemptToDepart(PmPath path, IVehicle? vehicle = null)
         {
             try
             {
@@ -164,7 +164,14 @@ namespace PathMover
                 {
                     return;
                 }
-                IVehicle vehicle = path.OutPendingList[0];
+                if (vehicle == null)
+                {
+                    vehicle = path.OutPendingList[0];
+                }
+                else if (!path.OutPendingList.Contains(vehicle)) //这辆车不在这段路上
+                {
+                    return;
+                }
                 if (path.IsCongestion)
                 {
                     vehicle.IsStoped = true;
@@ -182,7 +189,7 @@ namespace PathMover
                         if (deltaTime < _smoothFactor)
                         {
                             path.IsCongestion = true;
-                            Schedule(() => AttemptToDepart(path), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
+                            Schedule(() => AttemptToDepart(path, vehicle), TimeSpan.FromSeconds(_smoothFactor - deltaTime));
                         }
                         else
                         {
@@ -236,7 +243,7 @@ namespace PathMover
                 if (path.InPendingList.Count > 0)
                 {
                     PmPath formerPath = path.InPendingList[0].Item2;
-                    Schedule(() => AttemptToDepart(formerPath), TimeSpan.FromMilliseconds(1));
+                    Schedule(() => AttemptToDepart(formerPath, path.InPendingList[0].Item1), TimeSpan.FromMilliseconds(1));
                     path.InPendingList.RemoveAt(0);
                     HC_PathInPending[path].ObserveChange(-1 * vehicle.CapacityNeeded);
                 }
@@ -262,7 +269,7 @@ namespace PathMover
                     if (pair.Path.InPendingList.Count > 0)
                     {
                         PmPath path = pair.Path.InPendingList[0].Item2;
-                        Schedule(() => AttemptToDepart(path), TimeSpan.FromMilliseconds(1));
+                        Schedule(() => AttemptToDepart(path, pair.Path.InPendingList[0].Item1), TimeSpan.FromMilliseconds(1));
                         pair.Path.InPendingList.RemoveAt(0);
                         HC_PathInPending[pair.Path].ObserveChange(-1 * vehicle.CapacityNeeded);
                     }
