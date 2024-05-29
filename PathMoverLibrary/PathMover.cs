@@ -195,6 +195,11 @@ namespace PathMover
                         {
                             path.IsCongestion = false;
                             path.OutPendingList.Remove(vehicle);
+                            if (vehicle.PengingPath != null && vehicle != null)
+                            {
+                                vehicle.PengingPath.InPendingList.RemoveAt(0);
+                                vehicle.PengingPath = null;
+                            }
                             //Schedule(() => Depart(vehicle, path), TimeSpan.FromMilliseconds(1)); //还没有离开当前路段，所以仍传递当前路段
                             Depart(vehicle, path);
                             nextPath.DepartTimeStamp = ClockTime;
@@ -202,8 +207,8 @@ namespace PathMover
                     }
                     else //下一段路还在堵
                     {
-
                         nextPath.InPendingList.Add((vehicle, path));
+                        vehicle.PengingPath = nextPath;
                         foreach (var entry in HC_PathInPending)
                         {
                             // Console.WriteLine($"from: {entry.Key.StartPoint.Tag}, to: {entry.Key.EndPoint.Tag}");
@@ -244,7 +249,7 @@ namespace PathMover
                 {
                     PmPath formerPath = path.InPendingList[0].Item2;
                     Schedule(() => AttemptToDepart(formerPath, path.InPendingList[0].Item1), TimeSpan.FromMilliseconds(1));
-                    path.InPendingList.RemoveAt(0);
+                    //path.InPendingList.RemoveAt(0);
                     HC_PathInPending[path].ObserveChange(-1 * vehicle.CapacityNeeded);
                 }
                 Schedule(() => AttemptToEnter(path.StartPoint), TimeSpan.FromMilliseconds(1));
@@ -270,7 +275,7 @@ namespace PathMover
                     {
                         PmPath path = pair.Path.InPendingList[0].Item2;
                         Schedule(() => AttemptToDepart(path, pair.Path.InPendingList[0].Item1), TimeSpan.FromMilliseconds(1));
-                        pair.Path.InPendingList.RemoveAt(0);
+                        //pair.Path.InPendingList.RemoveAt(0);
                         HC_PathInPending[pair.Path].ObserveChange(-1 * vehicle.CapacityNeeded);
                     }
                     Schedule(() => AttemptToEnter(pair.Path.StartPoint), TimeSpan.FromMilliseconds(1));

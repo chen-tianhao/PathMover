@@ -11,6 +11,7 @@ namespace PathMover
         double Speed { get; set; }
         int CapacityNeeded { get; set; }
         PmPath CurrentPath { get; set; }
+        PmPath? PengingPath { get; set; } // vehicle is waiting in InPengingList of this path.
         bool IsStoped { get; set; }
         List<ControlPoint> TargetList { get; set; }
         void RemoveTarget(string controlPointTag);
@@ -24,6 +25,7 @@ namespace PathMover
         public double Speed { get; set; }
         public int CapacityNeeded { get; set; } = 1;
         public PmPath CurrentPath { get; set; }
+        public PmPath? PengingPath { get; set; }
         public bool IsStoped { get; set; } = false;
         public List<ControlPoint> TargetList { get; set; }
 
