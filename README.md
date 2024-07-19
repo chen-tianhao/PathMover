@@ -3,6 +3,9 @@ A Path Mover implementation library based on O2DESNet framework.
 
 # Change Log
 
+## Version 1.0.4
+Model revise: Since overtake is not allowed, only the 1st vehicle in OutPengList can be added to relevant InPendingList. 
+
 ## Version 1.0.2
 Bug fix: Add PengingPath to interface IVehicle, to manage item inside path.InPendingList in event AttemptToDepart.
 
