@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
 	
 	<PackageId>PathMover</PackageId>
-	<Version>1.0.1</Version>
+	<Version>1.0.4</Version>
 	<Authors>Chen Tianhao</Authors>
 	<Company>NUS</Company>
 	
