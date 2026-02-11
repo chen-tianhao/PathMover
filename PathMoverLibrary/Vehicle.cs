@@ -14,8 +14,8 @@ namespace PathMover
         PmPath? PengingPath { get; set; } // vehicle is waiting in InPengingList of this path.
         bool IsStoped { get; set; }
         List<ControlPoint> TargetList { get; set; }
-        void RemoveTarget(string controlPointTag);
-        PmPath NextPath(string currentPointTag);
+        void RemoveTarget(ushort controlPointId);
+        PmPath NextPath(ushort currentPointId);
     }
     public class Vehicle : IVehicle
     {
@@ -48,28 +48,28 @@ namespace PathMover
             sb.AppendFormat("[{0}] TargetList: ", Name);
             foreach (var cp in TargetList)
             {
-                sb.AppendFormat(" -> {0}", cp.Tag);
+                sb.AppendFormat(" -> {0}", cp.Id);
             }
             return sb.ToString();
         }
 
-        public void RemoveTarget(string controlPointTag)
+        public void RemoveTarget(ushort controlPointId)
         {
-            if (TargetList.Count > 0 && TargetList[0].Tag.Equals(controlPointTag))
+            if (TargetList.Count > 0 && TargetList[0].Id.Equals(controlPointId))
             { 
                 TargetList.RemoveAt(0);
             }
         }
         
-        public PmPath NextPath(string currentPointTag)
+        public PmPath NextPath(ushort currentPointId)
         {
             if (TargetList.Count == 0) return null;
-            while(TargetList[0].Tag.Equals(currentPointTag))
+            while(TargetList[0].Id.Equals(currentPointId))
             {
                 TargetList.RemoveAt(0);
                 if (TargetList.Count == 0) return null;
             }
-            PmPath nextPath = PathMoverStatics.GetPath(currentPointTag, TargetList[0].Tag);
+            PmPath nextPath = PathMoverStatics.GetPath(currentPointId, TargetList[0].Id);
             return nextPath;
         }
     }

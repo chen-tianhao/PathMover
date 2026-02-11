@@ -3,10 +3,24 @@
 ################################################################################
 
 /.vs
-/NUnitTest_PM/bin/Debug/net6.0
+/NUnitTest_PM/bin
 /NUnitTest_PM/obj
-/PathMoverDemo/bin/Debug/net6.0
+/PathMoverDemo/bin
 /PathMoverDemo/obj
-/PathMoverLibrary/bin/Debug/netstandard2.1
+/PathMoverLibrary/bin
 /PathMoverLibrary/obj
+/PathMoverRoutingGenerator/bin
+/PathMoverRoutingGenerator/obj
+/RoutingTableBuilder/bin
+/RoutingTableBuilder/obj
 /AppLogger
+
+# Network data files
+control_points_v*.json
+routing_table.json
+
+# Visualization outputs
+/Visualization/.venv
+/Visualization/__pycache__
+/Visualization/*.png
+/Visualization/simulation_log.csv

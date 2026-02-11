@@ -22,26 +22,35 @@ namespace NUnitTest_PM
 
             //准备路由表
             Dictionary<(ControlPoint, ControlPoint), ControlPoint> routeTable = new Dictionary<(ControlPoint, ControlPoint), ControlPoint>();
-            ControlPoint A = new ControlPoint("A");
-            ControlPoint B = new ControlPoint("B");
-            ControlPoint C = new ControlPoint("C");
-            ControlPoint D = new ControlPoint("D");
-            ControlPoint E = new ControlPoint("E");
-            ControlPoint F = new ControlPoint("F");
-            PathMoverStatics.AddPath(A.Tag, F.Tag, new PmPath(A, B));
-            PathMoverStatics.AddPath(B.Tag, F.Tag, new PmPath(B, C));
-            PathMoverStatics.AddPath(C.Tag, F.Tag, new PmPath(C, F));
+            ControlPoint A = new ControlPoint(0);
+            ControlPoint B = new ControlPoint(1);
+            ControlPoint C = new ControlPoint(2);
+            ControlPoint D = new ControlPoint(3);
+            ControlPoint E = new ControlPoint(4);
+            ControlPoint F = new ControlPoint(5);
+            
+            // Register names for debugging
+            PathMoverStatics.IdMapper.Register(0, "A");
+            PathMoverStatics.IdMapper.Register(1, "B");
+            PathMoverStatics.IdMapper.Register(2, "C");
+            PathMoverStatics.IdMapper.Register(3, "D");
+            PathMoverStatics.IdMapper.Register(4, "E");
+            PathMoverStatics.IdMapper.Register(5, "F");
+            
+            PathMoverStatics.AddPath(A.Id, F.Id, new PmPath(A, B));
+            PathMoverStatics.AddPath(B.Id, F.Id, new PmPath(B, C));
+            PathMoverStatics.AddPath(C.Id, F.Id, new PmPath(C, F));
 
-            PathMoverStatics.AddPath(A.Tag, E.Tag, new PmPath(A, D));
-            PathMoverStatics.AddPath(D.Tag, E.Tag, new PmPath(D, E));
+            PathMoverStatics.AddPath(A.Id, E.Id, new PmPath(A, D));
+            PathMoverStatics.AddPath(D.Id, E.Id, new PmPath(D, E));
 
-            PathMoverStatics.AddPath(E.Tag, F.Tag, new PmPath(E, D));
-            PathMoverStatics.AddPath(D.Tag, F.Tag, new PmPath(D, C));
+            PathMoverStatics.AddPath(E.Id, F.Id, new PmPath(E, D));
+            PathMoverStatics.AddPath(D.Id, F.Id, new PmPath(D, C));
 
-            PathMoverStatics.AddPath(E.Tag, C.Tag, new PmPath(E, D));
-            PathMoverStatics.AddPath(D.Tag, C.Tag, new PmPath(D, C));
+            PathMoverStatics.AddPath(E.Id, C.Id, new PmPath(E, D));
+            PathMoverStatics.AddPath(D.Id, C.Id, new PmPath(D, C));
 
-            PathMoverStatics.AddPath(B.Tag, C.Tag, new PmPath(B, C));
+            PathMoverStatics.AddPath(B.Id, C.Id, new PmPath(B, C));
 
             //创建车辆(及目的地序列)
             double agvSpeed = 1d;
@@ -87,8 +96,9 @@ namespace NUnitTest_PM
 
         void ShowExit(IVehicle v, ControlPoint cp)
         {
-            Console.WriteLine($"{v.Name} exit from: {cp.Tag}\n");
-            _Result4UnitTest += string.Format($"{v.Name} exit from: {cp.Tag}\n");
+            string cpName = PathMoverStatics.IdMapper.GetName(cp.Id);
+            Console.WriteLine($"{v.Name} exit from: {cpName}\n");
+            _Result4UnitTest = $"{v.Name} exit from: {cpName}";
             OnThen.Invoke(v, cp);
         }
 

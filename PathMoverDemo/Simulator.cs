@@ -22,12 +22,20 @@ namespace PathMoverTest
 
             //准备路由表
             //Dictionary<(ControlPoint, ControlPoint), ControlPoint> routeTable = new Dictionary<(ControlPoint, ControlPoint), ControlPoint>();
-            ControlPoint A = new ControlPoint("A");
-            ControlPoint B = new ControlPoint("B");
-            ControlPoint C = new ControlPoint("C");
-            ControlPoint D = new ControlPoint("D");
-            ControlPoint E = new ControlPoint("E");
-            ControlPoint F = new ControlPoint("F");
+            ControlPoint A = new ControlPoint(0);
+            ControlPoint B = new ControlPoint(1);
+            ControlPoint C = new ControlPoint(2);
+            ControlPoint D = new ControlPoint(3);
+            ControlPoint E = new ControlPoint(4);
+            ControlPoint F = new ControlPoint(5);
+            
+            // Register names for debugging
+            PathMoverStatics.IdMapper.Register(0, "A");
+            PathMoverStatics.IdMapper.Register(1, "B");
+            PathMoverStatics.IdMapper.Register(2, "C");
+            PathMoverStatics.IdMapper.Register(3, "D");
+            PathMoverStatics.IdMapper.Register(4, "E");
+            PathMoverStatics.IdMapper.Register(5, "F");
 
             PmPath AB = new PmPath(A, B);
             PmPath BC = new PmPath(B, C);
@@ -37,20 +45,20 @@ namespace PathMoverTest
             PmPath ED = new PmPath(E, D);
             PmPath DC = new PmPath(D, C);
 
-            PathMoverStatics.AddPath(A.Tag, F.Tag, AB);
-            PathMoverStatics.AddPath(B.Tag, F.Tag, BC);
-            PathMoverStatics.AddPath(C.Tag, F.Tag, CF);
+            PathMoverStatics.AddPath(A.Id, F.Id, AB);
+            PathMoverStatics.AddPath(B.Id, F.Id, BC);
+            PathMoverStatics.AddPath(C.Id, F.Id, CF);
 
-            PathMoverStatics.AddPath(A.Tag, E.Tag, AD);
-            PathMoverStatics.AddPath(D.Tag, E.Tag, DE);
+            PathMoverStatics.AddPath(A.Id, E.Id, AD);
+            PathMoverStatics.AddPath(D.Id, E.Id, DE);
 
-            PathMoverStatics.AddPath(E.Tag, F.Tag, ED);
-            PathMoverStatics.AddPath(D.Tag, F.Tag, DC);
+            PathMoverStatics.AddPath(E.Id, F.Id, ED);
+            PathMoverStatics.AddPath(D.Id, F.Id, DC);
 
-            PathMoverStatics.AddPath(E.Tag, C.Tag, ED);
-            PathMoverStatics.AddPath(D.Tag, C.Tag, DC);
+            PathMoverStatics.AddPath(E.Id, C.Id, ED);
+            PathMoverStatics.AddPath(D.Id, C.Id, DC);
 
-            PathMoverStatics.AddPath(B.Tag, C.Tag, BC);
+            PathMoverStatics.AddPath(B.Id, C.Id, BC);
 
             //创建车辆(及目的地序列)
             double agvSpeed = 1d;
@@ -83,13 +91,15 @@ namespace PathMoverTest
 
         void ShowEnter(IVehicle v, ControlPoint cp)
         {
-            Console.WriteLine($"{v.Name} exter from: {cp.Tag}");
+            string cpName = PathMoverStatics.IdMapper.GetName(cp.Id);
+            Console.WriteLine($"{v.Name} enter from: {cpName}");
             NumberEnter++;
         }
 
         void ShowExit(IVehicle v, ControlPoint cp)
         {
-            Console.WriteLine($"{v.Name} exit from: {cp.Tag}");
+            string cpName = PathMoverStatics.IdMapper.GetName(cp.Id);
+            Console.WriteLine($"{v.Name} exit from: {cpName}");
             NumberOut++;
             PathMover.Exit(v, cp);
         }

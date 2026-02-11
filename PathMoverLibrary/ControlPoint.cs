@@ -3,14 +3,14 @@ namespace PathMover
 {
     public class ControlPoint
     {
-        public string Tag { get; set; }
+        public ushort Id { get; set; }
         public ControlPoint()
         {
-            Tag = "default";
+            Id = 0;
         }
-        public ControlPoint(string tag)
+        public ControlPoint(ushort id)
         {
-            Tag = tag;
+            Id = id;
         }
         /*
         public bool operator ==(ControlPoint cp1, ControlPoint cp2)

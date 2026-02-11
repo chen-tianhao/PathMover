@@ -20,24 +20,25 @@ namespace PathMover
     {
         #region Statics
         // (current, target) -> NextHop
-        public Dictionary<(string, string), PmPath> RouteTable { get; private set; } = new Dictionary<(string, string), PmPath>();
-        public Dictionary<string, ControlPoint> AllControlPoints { get; private set; } = new Dictionary<string, ControlPoint>();
+        public Dictionary<(ushort, ushort), PmPath> RouteTable { get; private set; } = new Dictionary<(ushort, ushort), PmPath>();
+        public Dictionary<ushort, ControlPoint> AllControlPoints { get; private set; } = new Dictionary<ushort, ControlPoint>();
         public List<PmPath> PathList { get; private set; } = new List<PmPath>();
+        public IdMapper IdMapper { get; private set; } = new IdMapper();
         //private readonly StreamWriter _swPathMoverStatics;
         #endregion
 
         public PathMoverStatics()
         {
-            RouteTable = new Dictionary<(string, string), PmPath>();
+            RouteTable = new Dictionary<(ushort, ushort), PmPath>();
             //_swPathMoverStatics = new StreamWriter($"RT.csv");
         }
 
         public void AddPath(PmPath path)
         {
-            AddPath(path.StartPoint.Tag, path.EndPoint.Tag, path);
+            AddPath(path.StartPoint.Id, path.EndPoint.Id, path);
         }
 
-        public void AddPath(string from, string to, PmPath nextHop)
+        public void AddPath(ushort from, ushort to, PmPath nextHop)
         {
             // Console.WriteLine(from + to);
             // update route table
@@ -46,41 +47,41 @@ namespace PathMover
                 RouteTable.Add((from, to), nextHop);
             }
             // update control point list
-            if (!AllControlPoints.ContainsKey(nextHop.StartPoint.Tag))
+            if (!AllControlPoints.ContainsKey(nextHop.StartPoint.Id))
             {
-                AllControlPoints.Add(nextHop.StartPoint.Tag, nextHop.StartPoint);
+                AllControlPoints.Add(nextHop.StartPoint.Id, nextHop.StartPoint);
             }
-            if (!AllControlPoints.ContainsKey(nextHop.EndPoint.Tag))
+            if (!AllControlPoints.ContainsKey(nextHop.EndPoint.Id))
             {
-                AllControlPoints.Add(nextHop.EndPoint.Tag, nextHop.EndPoint);
+                AllControlPoints.Add(nextHop.EndPoint.Id, nextHop.EndPoint);
             }
             //update path list // DOTO: need to merge 2 path object with same start/end point
             if (!PathList.Contains((nextHop)))
             {
                 PathList.Add((nextHop));
                 // Since we need HC_PathMap to record every path, need to add every path into _routeTable
-                if (!RouteTable.ContainsKey((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag)))
+                if (!RouteTable.ContainsKey((nextHop.StartPoint.Id, nextHop.EndPoint.Id)))
                 {
-                    RouteTable.Add((nextHop.StartPoint.Tag, nextHop.EndPoint.Tag), nextHop);
+                    RouteTable.Add((nextHop.StartPoint.Id, nextHop.EndPoint.Id), nextHop);
                 }
             }
         }
 
-        public PmPath GetPath(string from, string to)
+        public PmPath GetPath(ushort from, ushort to)
         {
             return RouteTable[(from, to)];
         }
 
-        public bool PathExists(string from, string to)
+        public bool PathExists(ushort from, ushort to)
         {
-            return PathList.Any(path => path.StartPoint.Tag == from && path.EndPoint.Tag == to);
+            return PathList.Any(path => path.StartPoint.Id == from && path.EndPoint.Id == to);
         }
 
-        public ControlPoint GetControlPoint(string tag)
+        public ControlPoint GetControlPoint(ushort id)
         {
-            if (AllControlPoints.ContainsKey(tag))
+            if (AllControlPoints.ContainsKey(id))
             {
-                return AllControlPoints[tag];
+                return AllControlPoints[id];
             }
             else
             {
