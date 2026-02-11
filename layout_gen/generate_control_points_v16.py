@@ -24,7 +24,7 @@ from openpyxl.utils import column_index_from_string
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 EXCEL_FILE = BASE_DIR / "F3 Traffic Config File.xlsx"
 SHEET_NAME = "Traffic Config"
-OUT_JSON = BASE_DIR / "control_points_v16.json"
+OUT_JSON = BASE_DIR.parent / "data" / "control_points_v16.json"
 
 
 def color_id(cell) -> Optional[str]:

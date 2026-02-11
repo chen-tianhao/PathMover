@@ -11,9 +11,10 @@ namespace PathMoverTest
             Console.WriteLine("PathMover - Large-Scale Network Simulation");
             Console.WriteLine("========================================\n");
 
-            // Path to JSON file (adjust if needed)
-            string jsonPath = @"c:\repos\PathMover\control_points_v16.json";
-            string routingTablePath = @"c:\repos\PathMover\routing_table.json";
+            // Resolve solution root from executable directory (bin/Debug/net8.0 → project → solution root)
+            string solutionRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", ".."));
+            string jsonPath = Path.Combine(solutionRoot, "data", "control_points_v16.json");
+            string routingTablePath = Path.Combine(solutionRoot, "data", "routing_table.json");
 
             if (!System.IO.File.Exists(jsonPath))
             {
@@ -38,7 +39,7 @@ namespace PathMoverTest
                 int simulationMinutes = 15;
                 
                 // Create simulator with large network and routing table
-                string logPath = @"c:\repos\PathMover\Visualization\simulation_log.csv";
+                string logPath = Path.Combine(solutionRoot, "Visualization", "simulation_log.csv");
                 LargeScaleSimulator sim = new LargeScaleSimulator(
                     jsonPath, routingTablePath, logPath,
                     numberOfAGVs, agvSpeed, randomSeed, simulationMinutes);

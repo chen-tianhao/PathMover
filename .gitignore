@@ -15,9 +15,8 @@
 /RoutingTableBuilder/obj
 /AppLogger
 
-# Network data files
-control_points_v*.json
-routing_table.json
+# Generated data files in data/
+/data/routing_table*.json
 
 # Visualization outputs
 /Visualization/.venv

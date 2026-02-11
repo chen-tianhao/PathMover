@@ -202,38 +202,43 @@ class NetworkVisualizer:
 def main():
     """Main visualization function"""
     import os
-    
+    import pathlib
+
+    # Resolve paths relative to this script's location
+    script_dir = pathlib.Path(__file__).resolve().parent        # Visualization/
+    project_root = script_dir.parent                            # PathMover/
+
     # Path to the network JSON
-    json_path = r"c:\repos\PathMover\control_points_v16.json"
-    
+    json_path = str(project_root / "data" / "control_points_v16.json")
+
     if not os.path.exists(json_path):
         print(f"ERROR: Network JSON not found at {json_path}")
         return
-    
+
     # Create visualizer
     viz = NetworkVisualizer(json_path)
-    
+
     # Plot the network
     print("\nGenerating network visualization...")
     fig, ax = viz.plot_network(show_all_edges=False, highlight_entry_exit=True)
-    
+
     # Save the figure
-    output_path = r"c:\repos\PathMover\Visualization\network_map.png"
+    output_path = str(script_dir / "network_map.png")
     fig.savefig(output_path, dpi=200, bbox_inches='tight')
     print(f"Saved network map to: {output_path}")
-    
+
     # Show the plot
     plt.show()
-    
+
     # Check if simulation log exists
-    log_path = r"c:\repos\PathMover\Visualization\simulation_log.csv"
+    log_path = str(script_dir / "simulation_log.csv")
     if os.path.exists(log_path):
         print(f"\nLoading simulation trajectories from: {log_path}")
         trajectories = viz.load_simulation_log(log_path)
-        
+
         if trajectories:
             fig2, ax2 = viz.plot_trajectories(trajectories)
-            output_path2 = r"c:\repos\PathMover\Visualization\trajectories.png"
+            output_path2 = str(script_dir / "trajectories.png")
             fig2.savefig(output_path2, dpi=200, bbox_inches='tight')
             print(f"Saved trajectories to: {output_path2}")
             plt.show()

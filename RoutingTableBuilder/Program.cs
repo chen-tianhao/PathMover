@@ -11,9 +11,10 @@ namespace RoutingTableBuilder
             Console.WriteLine("PathMover Routing Table Builder");
             Console.WriteLine("========================================\n");
 
-            // Configuration
-            string jsonFilePath = @"c:\repos\PathMover\control_points_v16.json";
-            string outputPath = @"c:\repos\PathMover\routing_table.json";
+            // Resolve solution root from executable directory (bin/Debug/net8.0 → project → solution root)
+            string solutionRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", ".."));
+            string jsonFilePath = Path.Combine(solutionRoot, "data", "control_points_v16.json");
+            string outputPath = Path.Combine(solutionRoot, "data", "routing_table.json");
             int numRoutes = 100;
             bool completeMode = false;
             int? seed = 42;
@@ -56,7 +57,7 @@ namespace RoutingTableBuilder
 
             // Set default output path for complete mode if not explicitly provided
             if (completeMode && positionalArgs.Count < 2)
-                outputPath = @"c:\repos\PathMover\routing_table_complete.json";
+                outputPath = Path.Combine(solutionRoot, "data", "routing_table_complete.json");
 
             try
             {
