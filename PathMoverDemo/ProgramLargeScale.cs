@@ -14,7 +14,7 @@ namespace PathMoverTest
             // Resolve solution root from executable directory (bin/Debug/net8.0 → project → solution root)
             string solutionRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", ".."));
             string jsonPath = Path.Combine(solutionRoot, "data", "control_points_v16.json");
-            string routingTablePath = Path.Combine(solutionRoot, "data", "routing_table.json");
+            string routingTablePath = Path.Combine(solutionRoot, "data", "routing_table_complete.json");
 
             if (!System.IO.File.Exists(jsonPath))
             {
